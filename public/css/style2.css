@@ -1,0 +1,43 @@
+/* Ajoutez votre CSS personnalisé ici */
+
+.container-fluid {
+    font-family: 'Poppin', sans-serif;
+    background-color: ghostwhite;
+    background-attachment: fixed;
+    padding: 30px;
+}
+
+.card {
+    border-color: blue;
+}
+
+.card-header {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.card-body {
+    background-color: #e9ecef;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    background: white;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Ajoutez d'autres styles personnalisés au besoin */
