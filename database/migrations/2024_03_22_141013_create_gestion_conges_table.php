@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('conges', function (Blueprint $table) {
+        Schema::create('gestion_conges', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idEmployee');
             $table->string('type_conge');
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->string('statut');
+            $table->string('paiement');
+            $table->integer('jours_autorise');
             $table->timestamps();
-
-            $table->foreign('idEmployee')->references('id')->on('employees')->onDelete('cascade');
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conges');
+        Schema::dropIfExists('gestion_conges');
     }
 };

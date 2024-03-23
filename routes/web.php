@@ -27,4 +27,6 @@ Route::post('/logout',[\App\Http\Controllers\AuthController::class, 'logout'])->
 Route::resource('/users', \App\Http\Controllers\UtilisateurController::class);
 Route::resource('/employees', \App\Http\Controllers\EmployeeController::class);
 Route::resource('/contrats', \App\Http\Controllers\ContratController::class);
-Route::resource('/conges', \App\Http\Controllers\CongeController::class);
+Route::resource('/conges', \App\Http\Controllers\GestionCongeController::class);
+Route::resource('/listes', \App\Http\Controllers\ListesCongeController::class);
+Route::get('/getPhoneNumber/{id}', [\App\Http\Controllers\ListesCongeController::class ,'getPhoneNumber']);

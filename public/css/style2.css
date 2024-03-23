@@ -39,5 +39,74 @@
     outline: none;
     cursor: pointer;
 }
+.submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-top: -22px; /* Ajustement pour aligner avec le menu principal */
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.parent-menu:hover .submenu {
+    display: block;
+}
+.second-navbar {
+    background-color: #f0f0f0; /* Nouvelle couleur de fond */
+    padding: 0 20px;
+    border-radius: 0;
+    box-shadow: 0 10px 4px rgba(159, 162, 177, .8);
+    display: flex;
+    overflow: hidden;
+    overflow-x: auto;
+    position: relative;
+}
+
+/* On stylise chaque élément */
+.second-navbar .nav-item {
+    color: #17a2b8; /* Nouvelle couleur de texte */
+    font-family: arial, sans-serif;
+    padding: 20px;
+    margin: 0 6px;
+    position: relative;
+}
+
+/* Ici on met juste un petit élément avant chaque élément pour le rendre plus beau visuellement */
+.second-navbar .nav-item:before {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    background-color: #dfe2ea; /* Nouvelle couleur pour l'élément avant */
+    height: 5px;
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+    left: 0;
+    transition: .3s;
+}
+
+/* Avec les dernières nouveautés de CSS, on peut changer les propriétés des éléments selon des conditions avec not */
+.second-navbar .nav-item:not(.is-active):hover:before {
+    bottom: 0;
+}
+.second-navbar .nav-item:not(.is-active):hover {
+    color: #333;
+}
+
+/* Stylisons notre indicateur */
+.second-navbar .nav-indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 5px;
+    transition: .4s;
+    border-radius: 8px 8px 0 0;
+}
+
+.second-navbar .nav-item.active {
+    color: #007bff; /* Nouvelle couleur pour le texte des liens actifs */
+    font-weight: bold; /* Texte en gras pour les liens actifs */
+}
 
 /* Ajoutez d'autres styles personnalisés au besoin */

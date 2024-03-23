@@ -9,5 +9,25 @@ class Conge extends Model
 {
     use HasFactory;
 
-    protected $fillable =['idEmployee','type_conge','date_debut','date_fin','statut'];
+    protected $fillable = [
+        'idEmployee',
+        'idType_conge',
+        'date_debut',
+        'date_fin',
+        'nombre_jour',
+        'statut',
+        'telephone',
+    ];
+
+    // Relation avec l'employé
+    public function employees()
+    {
+        return $this->belongsTo(Employee::class, 'idEmployee');
+    }
+
+    // Relation avec le type de congé
+    public function typeConge()
+    {
+        return $this->belongsTo(Gestion_Conge::class, 'idType_conge');
+    }
 }

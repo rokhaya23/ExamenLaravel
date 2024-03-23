@@ -47,9 +47,12 @@
     </ul>
     <ul class="side-menu">
         <li>
-            <form id="logout-form" action="{{ route('logout')}}" method="POST" style="display: none;">
-                <i class='bx bx-log-out-circle'></i>
-                Logout
+            <form id="logout-form" action="{{ route('logout')}}" method="POST" >
+                @csrf
+                <button type="submit" class="btn btn-link text-danger">
+                    <i class='bx bx-log-out-circle'></i>
+                    Logout
+                </button>
             </form>
         </li>
     </ul>
