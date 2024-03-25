@@ -38,12 +38,32 @@
         <div class="logo-name"><span>Asmr</span>Prog</div>
     </a>
     <ul class="side-menu">
-        <li><a href="#"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
-        <li class="active"><a href="{{ route('users.index')}}"><i class='bx bx-store-alt'></i>User</a></li>
-        <li class="active"><a href="{{ route('employees.index')}}"><i class='bx bx-analyse'></i>Employee</a></li>
-        <li class="active"><a href="{{ route('contrats.index')}}"><i class='bx bx-message-square-dots'></i>Contract</a></li>
-        <li class="active"><a href="{{ route('conges.index')}}"><i class='bx bx-group'></i>Leave Management</a></li>
-        <li><a href="#"><i class='bx bx-cog'></i>Document</a></li>
+        @auth
+
+            <li><a href="#"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
+
+            <!-- Lien User pour les utilisateurs ayant la permission 'manage_users' -->
+            @can('gerer_user')
+                <li class="active"><a href="{{ route('users.index')}}"><i class='bx bx-store-alt'></i>User</a></li>
+            @endcan
+
+            <!-- Lien Employee pour les utilisateurs ayant la permission 'manage_employees' -->
+            @can('gerer_employees')
+                <li class="active"><a href="{{ route('employees.index')}}"><i class='bx bx-analyse'></i>Employee</a></li>
+            @endcan
+
+            <!-- Lien Contract pour les utilisateurs ayant la permission 'manage_contracts' -->
+            @can('gerer_contrats')
+                <li class="active"><a href="{{ route('contrats.index')}}"><i class='bx bx-message-square-dots'></i>Contract</a></li>
+            @endcan
+
+            <!-- Lien Leave Management pour les utilisateurs ayant la permission 'manage_leave' -->
+            @can('gerer_conges')
+                <li class="active"><a href="{{ route('conges.index')}}"><i class='bx bx-group'></i>Leave Management</a></li>
+            @endcan
+
+            <li><a href="#"><i class='bx bx-cog'></i>Document</a></li>
+        @endauth
     </ul>
     <ul class="side-menu">
         <li>

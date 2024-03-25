@@ -19,13 +19,14 @@ class GestionRhSeeder extends Seeder
     {
         //creer des permissions
         $permissions = [
-            'gerer_utilisateur',
-            'gerer_document',
-            'gerer_employee',
-            'gerer_contrat',
-            'gerer_conge',
-            'gerer_absence',
-            'voi_infos',
+            'gerer_user',
+            'gerer_documents',
+            'gerer_employees',
+            'gerer_contrats',
+            'gerer_conges',
+            'gestion_conges',
+            'category_conges',
+            'voir_infos',
 
         ];
 
@@ -39,27 +40,26 @@ class GestionRhSeeder extends Seeder
         $utilisateurinterne = Role::create(['name' => 'Utilisateur Interne']);
 
         $gestionnaire->givePermissionTo([
-            'gerer_document',
-            'gerer_employee',
-            'gerer_contrat',
-            'gerer_conge',
-            'gerer_absence',
-            'voi_infos',
+            'gerer_documents',
+            'gerer_employees',
+            'gerer_contrats',
+            'voir_infos',
         ]);
 
 
         $administrateur->givePermissionTo([
-            'gerer_utilisateur',
-            'gerer_document',
-            'gerer_employee',
-            'gerer_contrat',
-            'gerer_conge',
-            'gerer_absence',
-            'voi_infos',
+            'gerer_user',
+            'gerer_documents',
+            'gerer_employees',
+            'gerer_contrats',
+            'gerer_conges',
+            'gestion_conges',
+            'category_conges',
+            'voir_infos',
         ]);
 
         $utilisateurinterne->givePermissionTo([
-            'voi_infos',
+            'voir_infos',
         ]);
 
         //creer des utilisateurs

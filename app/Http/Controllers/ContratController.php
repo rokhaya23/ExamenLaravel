@@ -11,7 +11,7 @@ class ContratController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:gerer_contrat', ['only' => ['index','show','create','update','store','edit','destroy']]);
+        $this->middleware('permission:gerer_contrats', ['only' => ['index','show','create','update','store','edit','destroy']]);
     }
 
     public function index()

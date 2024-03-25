@@ -6,10 +6,17 @@
     <div class="container mt-lg-5">
 
         <nav class="second-navbar">
-            <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>
-            <a href="{{ route('listes.index')}}" class="nav-item is-active">Leave List</a>
+            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'manage_leave_categories' -->
+            @can('gestion_conges')
+                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>
+            @endcan
 
+            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'view_leave_list' -->
+            @can('voir_infos')
+                <a href="{{ route('listes.index')}}" class="nav-item is-active">Leave List</a>
+            @endcan
         </nav>
+
         <br><br>
 
         <a class="btn btn-primary" href="{{ route('conges.create') }}">Add a Category</a>

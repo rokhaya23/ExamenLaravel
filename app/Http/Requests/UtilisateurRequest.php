@@ -21,24 +21,15 @@ class UtilisateurRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = $this->route('user'); // Obtenir l'utilisateur à partir de la route
+
+        // Définir les règles de validation en utilisant l'utilisateur récupéré
         return [
             'nom' => 'required|string',
             'prenom' => 'required|string',
-            'date_naissance' => 'required|date',
-            'adresse' => 'required|string',
-            'telephone' => 'required|string',
-            'poste' => 'required|string',
-            'sexe' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
-            'banque' => 'required|string',
-            'numero_compte' => 'required|string',
-            'CNI' => 'required|string|min:13|max:13|unique:employees,CNI',
-            'password' => 'required|string|min:8',
-            'departement' => 'required|string',
-            'salaire' => 'required|numeric',
-            'date_embauche' => 'required|date',
-            'langues' => 'nullable|string',
-            'situation_matrimonial' => 'nullable|string',
+            'email' => 'required|email|unique:utilisateurs,email,' . $user->id,
+            'password' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

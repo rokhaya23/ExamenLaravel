@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('idType_conge');
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->date('nombre_jour');
-            $table->string('statut');
+            $table->integer('nombre_jour');
+            $table->string('statut')->default('Pending');
             $table->string('telephone');
             $table->timestamps();
 

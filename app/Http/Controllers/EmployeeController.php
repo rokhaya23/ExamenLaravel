@@ -12,7 +12,7 @@ class EmployeeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:gerer_employee', ['only' => ['index','show','create','update','store','edit','destroy']]);
+        $this->middleware('permission:gerer_employees', ['only' => ['index','show','create','update','store','edit','destroy']]);
     }
 
     public function index()

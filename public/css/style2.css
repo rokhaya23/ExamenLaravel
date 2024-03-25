@@ -109,4 +109,15 @@
     font-weight: bold; /* Texte en gras pour les liens actifs */
 }
 
+.status-pending {
+    color: blue; /* Blue color for Pending status */
+}
+
+.status-accepted {
+    color: green; /* Green color for Accepted status */
+}
+
+.status-rejected {
+    color: red; /* Red color for Rejected status */
+}
 /* Ajoutez d'autres styles personnalisés au besoin */

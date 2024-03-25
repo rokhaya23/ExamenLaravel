@@ -35,7 +35,10 @@ class AuthController extends Controller
             }
             // Vérifier si l'utilisateur a le rôle product_manager
             elseif (auth()->user()->hasRole('Gestionnaire')) {
-                return redirect()->route('users.index');
+                return redirect()->route('employees.index');
+            }
+            elseif (auth()->user()->hasRole('Utilisateur Interne')) {
+                return redirect()->route('listes.index');
             }
 
             // Redirection par défaut si le rôle n'est pas identifié

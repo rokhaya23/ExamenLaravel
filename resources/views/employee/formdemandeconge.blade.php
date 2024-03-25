@@ -11,12 +11,12 @@
                 Leave Request Form
             </div>
             <div class="card-body">
-                <form method="post" action="{{ route($demandeConge->exists ? 'demande_conge.update' : 'demande_conge.store', $demandeConge) }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route($demandeConge->exists ? 'listes.update' : 'listes.store', $demandeConge) }}" enctype="multipart/form-data">
                     @csrf
                     @method($demandeConge->exists ? 'put' : 'post')
 
-                    <input type="hidden" name="idEmployee" value="{{ $demandeConge->idEmployee }}">
-                    <input type="hidden" name="idType_conge" value="{{ $demandeConge->idType_conge }}">
+{{--                    <input type="hidden" name="idEmployee" value="{{ $demandeConge->idEmployee }}">--}}
+{{--                    <input type="hidden" name="idType_conge" value="{{ $demandeConge->idType_conge }}">--}}
 
                     <!-- Employé -->
                     <div class="mb-3 row">
@@ -79,22 +79,25 @@
                         </div>
                     </div>
 
-                    <!-- Statut -->
-                    <div class="mb-3 row">
-                        <label for="statut" class="col-md-4 col-form-label text-md-end text-start">Status</label>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control @error('statut') is-invalid @enderror" id="statut" name="statut" value="{{ $demandeConge->statut }}" required>
-                            @error('statut')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                    @if (Auth::user()->hasRole('Administrateur'))
+                        <!-- Statut -->
+                        <div class="mb-3 row">
+                            <label for="statut" class="col-md-4 col-form-label text-md-end text-start">Status</label>
+                            <div class="col-md-6">
+                                <select class="form-control" id="statut" name="statut" required >
+                                    <option value="Pending" {{ $demandeConge->statut == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="Accepted" {{ $demandeConge->statut == 'Accepted' ? 'selected' : '' }}>Accepted</option>
+                                    <option value="Rejected" {{ $demandeConge->statut == 'Rejected' ? 'selected' : '' }}>Rejected</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <!-- Téléphone -->
                     <div class="mb-3 row">
                         <label for="telephone" class="col-md-4 col-form-label text-md-end text-start">Telephone</label>
                         <div class="col-md-6">
-                            <input type="text" class="form-control @error('telephone') is-invalid @enderror" id="telephone" name="telephone" value="{{ $demandeConge->employee->telephone }}" required>
+                            <input type="text" class="form-control @error('telephone') is-invalid @enderror" id="telephone" name="telephone"  required>
                             @error('telephone')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -103,38 +106,48 @@
 
                     <!-- Boutons de soumission -->
                     <div class="modal-footer">
-                        <a href="{{ route('demande_conge.index') }}" class="btn btn-outline-secondary">Close</a>
+                        <a href="{{ route('listes.index') }}" class="btn btn-outline-secondary">Close</a>
                         <button type="submit" class="btn btn-primary">{{ $demandeConge->exists ? "Edit" : "Add" }}</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        // Fonction pour pré-remplir le champ du téléphone en fonction de l'employé sélectionné
+        function prefillPhone() {
+            var employeeId = document.getElementById("idEmployee").value;
+            // Effectuez une requête AJAX pour récupérer le numéro de téléphone de l'employé en fonction de son ID
+            // Par exemple :
+            fetch('/getPhoneNumber/' + employeeId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("telephone").value = data.phoneNumber;
+                });
+        }
+
+        // Écouteur d'événement pour le changement de sélection de l'employé
+        document.getElementById("idEmployee").addEventListener("change", prefillPhone);
+
+        // Appel initial de la fonction prefillPhone() pour pré-remplir le champ du téléphone si un employé est déjà sélectionné
+        prefillPhone();
+
+        function calculateDays() {
+            var startDate = new Date(document.getElementById("date_debut").value);
+            var endDate = new Date(document.getElementById("date_fin").value);
+            var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            document.getElementById("nombre_jour").value = diffDays;
+        }
+
+        // Écouteur d'événement pour le changement de la date de début
+        document.getElementById("date_debut").addEventListener("change", calculateDays);
+
+        // Écouteur d'événement pour le changement de la date de fin
+        document.getElementById("date_fin").addEventListener("change", calculateDays);
+
+        // Appel initial de la fonction calculateDays() pour mettre à jour le nombre de jours si les dates sont déjà remplies
+        calculateDays();
+    </script>
+
 @endsection
-<script>
-    // Fonction pour calculer le nombre de jours entre deux dates
-    function calculateDays() {
-        var startDate = new Date(document.getElementById("date_debut").value);
-        var endDate = new Date(document.getElementById("date_fin").value);
-        var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        document.getElementById("nombre_jour").value = diffDays;
-    }
-
-    // Fonction pour pré-remplir le champ du téléphone en fonction de l'employé sélectionné
-    function prefillPhone() {
-        var employeeId = document.getElementById("idEmployee").value;
-        // Effectuez une requête AJAX pour récupérer le numéro de téléphone de l'employé en fonction de son ID
-        // Par exemple :
-        fetch('/getPhoneNumber/' + employeeId)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("telephone").value = data.phoneNumber;
-            });
-    }
-
-    // Écouteurs d'événements pour les changements de dates et de sélection d'employé
-    document.getElementById("date_debut").addEventListener("change", calculateDays);
-    document.getElementById("date_fin").addEventListener("change", calculateDays);
-    document.getElementById("idEmployee").addEventListener("change", prefillPhone);
-</script>

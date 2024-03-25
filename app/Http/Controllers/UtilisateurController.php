@@ -15,7 +15,7 @@ class UtilisateurController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:gerer_utilisateur', ['only' => ['index','show','create','update','store','edit','destroy']]);
+        $this->middleware('permission:gerer_user', ['only' => ['index','show','create','update','store','edit','destroy']]);
     }
 
     public function index()
@@ -66,24 +66,30 @@ class UtilisateurController extends Controller
     {
         $input = $request->all();
 
-        if(!empty($request->password)){
+        // Vérifier si un nouveau mot de passe a été fourni
+        if ($request->filled('password')) {
             $input['password'] = Hash::make($request->password);
-        }else{
+        } else {
             $input = $request->except('password');
         }
 
+        // Mettre à jour les autres champs de l'utilisateur
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
-            $user->photo = basename($path);
+            $input['photo'] = basename($path);
         }
 
+        // Appliquer les modifications à l'utilisateur
         $user->update($input);
 
+        // Synchroniser les rôles et les permissions
         $user->syncRoles($request->roles);
         $user->syncPermissions($request->permissions);
 
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
+
+
 
     public function destroy(Utilisateur $user)
     {

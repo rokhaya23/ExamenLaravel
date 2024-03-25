@@ -37,4 +37,9 @@ class Employee extends Model
     {
         return $this->hasMany(Contrat::class, 'idEmployee');
     }
+
+    public function conges()
+    {
+        return $this->hasMany(Conge::class, 'idEmployee');
+    }
 }

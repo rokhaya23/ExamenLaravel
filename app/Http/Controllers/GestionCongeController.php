@@ -10,7 +10,7 @@ class GestionCongeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:gerer_conge', ['only' => ['index','show','create','update','store','edit','destroy']]);
+        $this->middleware('permission:gestion_conges', ['only' => ['index','show','create','update','store','edit','destroy']]);
     }
 
     public function index()

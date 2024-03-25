@@ -12,4 +12,11 @@ class Gestion_Conge extends Model
     protected $table = 'gestion_conges';
 
     protected $fillable =['type_conge','paiement','jours_autorise'];
+
+    public function categoryConges()
+    {
+        return $this->hasOne(Category_Conge::class, 'idType_conge');
+    }
+
+
 }

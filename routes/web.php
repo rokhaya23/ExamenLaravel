@@ -29,4 +29,7 @@ Route::resource('/employees', \App\Http\Controllers\EmployeeController::class);
 Route::resource('/contrats', \App\Http\Controllers\ContratController::class);
 Route::resource('/conges', \App\Http\Controllers\GestionCongeController::class);
 Route::resource('/listes', \App\Http\Controllers\ListesCongeController::class);
-Route::get('/getPhoneNumber/{id}', [\App\Http\Controllers\ListesCongeController::class ,'getPhoneNumber']);
+
+Route::get('/getPhoneNumber/{employeeId}', [\App\Http\Controllers\ListesCongeController::class ,'getPhoneNumber']);
+
+Route::get('/categories-conge', [\App\Http\Controllers\CategorieConge::class,'index'])->name('categories-conge.index');
