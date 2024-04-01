@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 
-class Employee extends Model
+class Employee extends Authenticatable
 {
-    use HasFactory;
+    use HasRoles;
 
     protected $fillable = [
         'nom',
@@ -27,6 +29,7 @@ class Employee extends Model
         'date_embauche',
         'langues',
         'situation_matrimonial',
+        'photo',
     ];
 
     protected $casts = [

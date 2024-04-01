@@ -5,31 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Category_Conge;
 use App\Models\Conge;
 use App\Models\Gestion_Conge;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 
 class CategorieConge extends Controller
 {
     public function index()
     {
-        if (auth()->check()) {
-            $idEmployee = auth()->user()->id;
-            $conges = Conge::where('idEmployee', $idEmployee)->get();
-            $gestionConges = Gestion_Conge::all();
+        $idEmployee = auth()->user()->id; // Supposons que vous utilisez l'authentification par défaut de Laravel
 
-            // Calculating remaining days for each type of leave
-            $remainingDays = [];
-            foreach ($gestionConges as $gestionConge) {
-                $typeConge = $gestionConge->type_conge;
-                $joursAutorise = $gestionConge->jours_autorise;
-                $congesForType = $conges->where('idType_conge', $typeConge);
-                $joursUtilise = $congesForType->sum('nombre_jour');
-                $remainingDays[$typeConge] = $joursAutorise - $joursUtilise;
-            }
+        // Récupérer les demandes de congé de l'employé
+        $demandesConges = Conge::where('idEmployee', $idEmployee)->get();
 
-            return view('category_conge.index', compact('conges', 'remainingDays'));
-        } else {
-            // L'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
-            return redirect()->route('users.login');
-        }
+        // Récupérer les informations sur les types de congé et les jours autorisés
+        $gestionConges = Gestion_Conge::all();
+
+
+        return view('category_conge.index',  compact('demandesConges', 'gestionConges'));
+
+    }
+
+    public function telechargerPdfDemandeConge($id)
+    {
+        $demandeConge = Conge::findOrFail($id); // Supposons que vous avez un modèle Conge pour représenter les demandes de congé
+
+        // Générer le PDF en utilisant une vue spécifique pour la demande de congé
+        $pdf = PDF::loadView('employee.pdf', compact('demandeConge'));
+
+        // Télécharger le PDF
+        return $pdf->download('demande_conge.pdf');
     }
 }

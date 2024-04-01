@@ -15,22 +15,23 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
-            $table->date('date_naissance');
-            $table->string('adresse');
-            $table->string('telephone');
-            $table->string('poste');
-            $table->string('sexe');
+            $table->date('date_naissance')->nullable();
+            $table->string('adresse')->nullable();
+            $table->string('telephone')->nullable();
+            $table->string('poste')->nullable();
+            $table->string('sexe')->nullable();
             $table->string('email');
-            $table->string('banque');
-            $table->string('numero_compte');
-            $table->string('CNI',13);
-            $table->string('password');
-            $table->string('departement');
-            $table->decimal('salaire', 10, 2);
-            $table->date('date_embauche');
-            $table->json('langues');
-            $table->string('situation_matrimonial');
+            $table->string('banque')->nullable();
+            $table->string('numero_compte')->nullable();
+            $table->string('CNI',13)->nullable();
+            $table->string('password')->nullable();
+            $table->string('departement')->nullable();
+            $table->decimal('salaire', 10, 2)->nullable();
+            $table->date('date_embauche')->nullable();
+            $table->json('langues')->nullable();
+            $table->string('situation_matrimonial')->nullable();
             $table->timestamps();
+
         });
     }
 

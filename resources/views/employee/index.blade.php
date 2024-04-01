@@ -40,9 +40,20 @@
                         <form action="{{ route('employees.destroy', $employee->id) }}" method="post">
                             @csrf
                             @method('DELETE')
-                            <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> </a>
 
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete this employee?');"><i class="bi bi-trash"></i> </button>
+                            @if (in_array('Administrateur', $employee->getRoleNames()->toArray() ?? []) )
+                                @if (Auth::user()->hasRole('Administrateur'))
+                                    <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> </a>
+                                    <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-success btn-sm"><i class="bi bi-eye"></i></a>
+                                @endif
+                            @else
+                                <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> </a>
+                                <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-success btn-sm"><i class="bi bi-eye"></i></a>
+
+                                @if (Auth::user()->id != $employee->id)
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete this user?');"><i class="bi bi-trash"></i> </button>
+                                @endif
+                            @endif
 
                         </form>
                     </td>

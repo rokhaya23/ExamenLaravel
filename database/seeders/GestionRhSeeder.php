@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Categorie;
+use App\Models\Employee;
 use App\Models\Utilisateur;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,13 +20,14 @@ class GestionRhSeeder extends Seeder
     {
         //creer des permissions
         $permissions = [
-            'gerer_user',
             'gerer_documents',
             'gerer_employees',
             'gerer_contrats',
             'gerer_conges',
             'gestion_conges',
             'category_conges',
+            'listes_conge',
+            'gerer_roles',
             'voir_infos',
 
         ];
@@ -48,13 +50,14 @@ class GestionRhSeeder extends Seeder
 
 
         $administrateur->givePermissionTo([
-            'gerer_user',
             'gerer_documents',
             'gerer_employees',
             'gerer_contrats',
             'gerer_conges',
             'gestion_conges',
             'category_conges',
+            'listes_conge',
+            'gerer_roles',
             'voir_infos',
         ]);
 
@@ -63,7 +66,7 @@ class GestionRhSeeder extends Seeder
         ]);
 
         //creer des utilisateurs
-        $Admin = Utilisateur::create([
+        $Admin = Employee::create([
             'nom' => 'Beye',
             'prenom' => 'Rokhaya',
             'email' => 'rbeye23@gmail.com',
@@ -72,7 +75,7 @@ class GestionRhSeeder extends Seeder
         $Admin->assignRole('Administrateur');
 
 
-        $gestionnaire = Utilisateur::create([
+        $gestionnaire = Employee::create([
             'nom' => 'Fall',
             'prenom' => 'Fallou',
             'email' => 'falloufall@gmail.com',
@@ -80,7 +83,7 @@ class GestionRhSeeder extends Seeder
         ]);
         $gestionnaire->assignRole('Gestionnaire');
 
-        $userinterne = Utilisateur::create([
+        $userinterne = Employee::create([
             'nom' => 'sall',
             'prenom' => 'Rokhaya',
             'email' => 'rsall23@gmail.com',

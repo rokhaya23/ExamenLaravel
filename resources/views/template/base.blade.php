@@ -17,6 +17,11 @@
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
 
     <!-- jQuery library -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
@@ -40,12 +45,7 @@
     <ul class="side-menu">
         @auth
 
-            <li><a href="#"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
-
-            <!-- Lien User pour les utilisateurs ayant la permission 'manage_users' -->
-            @can('gerer_user')
-                <li class="active"><a href="{{ route('users.index')}}"><i class='bx bx-store-alt'></i>User</a></li>
-            @endcan
+            <li class="active"><a href="{{route('dashboard')}}"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
 
             <!-- Lien Employee pour les utilisateurs ayant la permission 'manage_employees' -->
             @can('gerer_employees')
@@ -58,10 +58,25 @@
             @endcan
 
             <!-- Lien Leave Management pour les utilisateurs ayant la permission 'manage_leave' -->
-            @can('gerer_conges')
-                <li class="active"><a href="{{ route('conges.index')}}"><i class='bx bx-group'></i>Leave Management</a></li>
+            @can('category_conges')
+                <li class="active"><a href="{{ route('conges.index')}}"><i class='bx bx-group'></i>Leave Category</a></li>
             @endcan
 
+            @can('gerer_conges')
+                <li class="active"><a href="{{ route('categories-conge.index')}}"><i class='bx bx-group'></i>Category Leave</a></li>
+            @endcan
+
+            @can('gerer_roles')
+                <li class="active"><a href="{{ route('roles.index')}}"><i class='bx bx-group'></i>Role</a></li>
+            @endcan
+
+            @can('voir_infos')
+                <li class="active"><a href="{{ route('listes.index') }}"><i class='bx bx-group'></i>Leave Request</a></li>
+            @endcan
+
+            @can('listes_conge')
+                <li class="active"><a href="{{ route('mes_demandes_conge') }}"><i class='bx bx-group'></i>Leave List</a></li>
+            @endcan
             <li><a href="#"><i class='bx bx-cog'></i>Document</a></li>
         @endauth
     </ul>

@@ -23,11 +23,12 @@ class UtilisateurRequest extends FormRequest
     {
         $user = $this->route('user'); // Obtenir l'utilisateur à partir de la route
 
+        $userId = $user ? $user->id : null;
         // Définir les règles de validation en utilisant l'utilisateur récupéré
         return [
             'nom' => 'required|string',
             'prenom' => 'required|string',
-            'email' => 'required|email|unique:utilisateurs,email,' . $user->id,
+            'email' => 'required|email|unique:utilisateurs,email,' . $userId,
             'password' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];

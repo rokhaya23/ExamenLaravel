@@ -15,18 +15,21 @@
                     @csrf
                     @method($demandeConge->exists ? 'put' : 'post')
 
-{{--                    <input type="hidden" name="idEmployee" value="{{ $demandeConge->idEmployee }}">--}}
-{{--                    <input type="hidden" name="idType_conge" value="{{ $demandeConge->idType_conge }}">--}}
-
                     <!-- Employé -->
                     <div class="mb-3 row">
                         <label for="idEmployee" class="col-md-4 col-form-label text-md-end text-start">Employee</label>
                         <div class="col-md-6">
                             <select class="form-control" id="idEmployee" name="idEmployee" required>
                                 @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ $employee->id == $demandeConge->idEmployee ? 'selected' : '' }}>
-                                        {{ $employee->prenom }} {{ $employee->nom }} <!-- Remplacez name par le nom de la colonne correspondant au nom de l'employé -->
-                                    </option>
+                                    @if (Auth::user()->hasRole('Utilisateur Interne') && $employee->id == Auth::user()->employee->id)
+                                        <option value="{{ $employee->id }}" selected>
+                                            {{ $employee->prenom }} {{ $employee->nom }}
+                                        </option>
+                                    @elseif (!Auth::user()->hasRole('Utilisateur Interne'))
+                                        <option value="{{ $employee->id }}" {{ $employee->id == $demandeConge->idEmployee ? 'selected' : '' }}>
+                                            {{ $employee->prenom }} {{ $employee->nom }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -50,7 +53,7 @@
                     <div class="mb-3 row">
                         <label for="date_debut" class="col-md-4 col-form-label text-md-end text-start">Start Date</label>
                         <div class="col-md-6">
-                            <input type="date" class="form-control @error('date_debut') is-invalid @enderror" id="date_debut" name="date_debut" value="{{ $demandeConge->date_debut }}" required>
+                            <input type="date" class="form-control @error('date_debut') is-invalid @enderror" id="date_debut" name="date_debut" value="{{ old('date_debut', $demandeConge->date_debut ?? '') }}" required>
                             @error('date_debut')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -61,7 +64,7 @@
                     <div class="mb-3 row">
                         <label for="date_fin" class="col-md-4 col-form-label text-md-end text-start">End Date</label>
                         <div class="col-md-6">
-                            <input type="date" class="form-control @error('date_fin') is-invalid @enderror" id="date_fin" name="date_fin" value="{{ $demandeConge->date_fin }}" required>
+                            <input type="date" class="form-control @error('date_fin') is-invalid @enderror" id="date_fin" name="date_fin" value="{{ old('date_debut', $demandeConge->date_fin ?? '') }}" required>
                             @error('date_fin')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -72,7 +75,7 @@
                     <div class="mb-3 row">
                         <label for="nombre_jour" class="col-md-4 col-form-label text-md-end text-start">Number of Days</label>
                         <div class="col-md-6">
-                            <input type="number" class="form-control @error('nombre_jour') is-invalid @enderror" id="nombre_jour" name="nombre_jour" value="{{ $demandeConge->nombre_jour }}" required>
+                            <input type="number" class="form-control @error('nombre_jour') is-invalid @enderror" id="nombre_jour" name="nombre_jour" value="{{ $demandeConge->nombre_jour ?? ''}}" required>
                             @error('nombre_jour')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -97,7 +100,7 @@
                     <div class="mb-3 row">
                         <label for="telephone" class="col-md-4 col-form-label text-md-end text-start">Telephone</label>
                         <div class="col-md-6">
-                            <input type="text" class="form-control @error('telephone') is-invalid @enderror" id="telephone" name="telephone"  required>
+                            <input type="text" class="form-control @error('telephone') is-invalid @enderror" id="telephone" name="telephone" value="{{ $demandeConge->telephone }}" required>
                             @error('telephone')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror

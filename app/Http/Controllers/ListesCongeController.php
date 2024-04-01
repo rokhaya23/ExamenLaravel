@@ -6,15 +6,18 @@ use App\Models\Category_Conge;
 use App\Models\Conge;
 use App\Models\Employee;
 use App\Models\Gestion_Conge;
+use App\Models\Utilisateur;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ListesCongeController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:gerer_conges', ['only' => ['index','show','create','update','store','edit','destroy']]);
+        $this->middleware('permission:voir_infos', ['only' => ['index','show','create','update','store','edit','destroy']]);
     }
+
     public function index()
     {
         // Récupérer toutes les demandes de congé avec les informations de l'employé et du type de congé associés
@@ -35,7 +38,6 @@ class ListesCongeController extends Controller
         return view('employee.formdemandeconge', compact('demandeConge', 'employees', 'typesConge'));
     }
 
-
     public function store(Request $request)
     {
         // Validation des données du formulaire
@@ -50,7 +52,7 @@ class ListesCongeController extends Controller
 
         // Créer une nouvelle instance de Conge avec les données du formulaire
         $demandeConge = new Conge();
-        $demandeConge->idEmployee = $request->idEmployee;
+        $demandeConge->idEmployee = Auth::id(); // Identifiant de l'employé connecté
         $demandeConge->idType_conge = $request->idType_conge;
         $demandeConge->date_debut = $request->date_debut;
         $demandeConge->date_fin = $request->date_fin;
@@ -71,29 +73,14 @@ class ListesCongeController extends Controller
 
     public function edit(Conge $demandeConge)
     {
-        // Charger la demande de congé spécifique avec les informations de l'employé et du type de congé associés
-        $demandeConge->load('employees', 'typeConge');
-
         // Récupérer la liste des employés et des types de congé pour le formulaire de modification
-        $employees = Employee::all();
-        $typesConge = Gestion_Conge::all();
+        $employees = Employee::get();
+        $typesConge = Gestion_Conge::get();
 
         // Retourner la vue d'édition avec les données de la demande de congé et les listes des employés et des types de congé
         return view('employee.formdemandeconge', compact('demandeConge', 'employees', 'typesConge'));
     }
 
-
-    // Méthode pour afficher les détails d'une demande de congé
-    public function show(Conge $demandeConge)
-    {
-        // Récupérer la demande de congé spécifique avec les informations de l'employé et du type de congé associés
-        $demandeConge->load('employee', 'typeConge');
-
-        // Retourner la vue des détails de la demande de congé avec les données de la demande de congé
-        return view('employee.show', compact('demandeConge'));
-    }
-
-    // Méthode pour mettre à jour une demande de congé
     public function update(Request $request, Conge $demandeConge)
     {
         // Validation des données du formulaire
@@ -102,9 +89,13 @@ class ListesCongeController extends Controller
             'idType_conge' => 'required|exists:gestion_conges,id',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
-            'telephone' => 'required|string', // Validation du numéro de téléphone
-            // Autres règles de validation...
+            'telephone' => 'required|string',
         ]);
+
+        // Calculer le nombre de jours entre la date de début et la date de fin
+        $startDate = strtotime($request->date_debut);
+        $endDate = strtotime($request->date_fin);
+        $diffDays = round(($endDate - $startDate) / (60 * 60 * 24));
 
         // Mettre à jour les champs de la demande de congé avec les nouvelles données du formulaire
         $demandeConge->update([
@@ -112,19 +103,19 @@ class ListesCongeController extends Controller
             'idType_conge' => $request->idType_conge,
             'date_debut' => $request->date_debut,
             'date_fin' => $request->date_fin,
-            'telephone' => $request->telephone, // Mettre à jour le numéro de téléphone
-            // Mettre à jour le nombre de jours si nécessaire
+            'telephone' => $request->telephone,
+            'nombre_jour' => $diffDays, // Mettre à jour le nombre de jours
         ]);
 
+        // Si le statut de la demande est "Accepted", appeler la méthode pour accepter la demande
         if ($demandeConge->statut === 'Accepted') {
-            $this->acceptLeaveRequest($demandeConge);
+            $this->acceptLeaveRequest($demandeConge->id);
         }
+
         // Rediriger l'utilisateur vers la page de liste des demandes de congé ou toute autre page appropriée
         return redirect()->route('listes.index')->with('success', 'Leave request successfully updated.');
     }
 
-
-    // Méthode pour supprimer une demande de congé
     public function destroy(Conge $demandeConge)
     {
         // Supprimer la demande de congé
@@ -133,7 +124,6 @@ class ListesCongeController extends Controller
         // Rediriger l'utilisateur vers la page de liste des demandes de congé ou toute autre page appropriée
         return redirect()->route('listes.index')->with('success', 'Leave request successfully deleted.');
     }
-
 
     public function getPhoneNumber($employeeId)
     {
@@ -145,7 +135,7 @@ class ListesCongeController extends Controller
         }
     }
 
-    public function acceptLeaveRequest(Request $request, $id)
+    public function acceptLeaveRequest($id)
     {
         // Récupérez la demande de congé
         $demandeConge = Conge::findOrFail($id);
@@ -167,5 +157,33 @@ class ListesCongeController extends Controller
         // Mettez à jour le statut de la demande de congé
         $demandeConge->statut = 'Accepted';
         $demandeConge->save();
+    }
+
+    public function valider($id)
+    {
+        $demandeConge = Conge::findOrFail($id);
+        // Logic for validating the leave request
+        $demandeConge->statut = 'Accepted';
+        $demandeConge->save();
+
+        return view('employee.listecongeadmin',  compact('demandeConge'))->with('success', 'The leave request has been accepted successfully.');
+    }
+
+    public function refuser($id)
+    {
+        $demandeConge = Conge::findOrFail($id);
+        // Logic for rejecting the leave request
+        $demandeConge->statut = 'Rejected';
+        $demandeConge->save();
+
+        return view('employee.listecongeadmin',  compact('demandeConge'))->with('success', 'The leave request has been rejected successfully.');
+    }
+
+    public function mesDemandes()
+    {
+        $demandesConge = Conge::all();
+
+        return view('employee.listecongeadmin',  compact('demandesConge'));
+
     }
 }

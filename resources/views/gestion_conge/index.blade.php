@@ -5,17 +5,27 @@
 @section('content')
     <div class="container mt-lg-5">
 
-        <nav class="second-navbar">
-            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'manage_leave_categories' -->
-            @can('gestion_conges')
-                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>
-            @endcan
+{{--        <nav class="second-navbar">--}}
+{{--            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'gestion_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--            <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>--}}
+{{--            @endif--}}
 
-            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'view_leave_list' -->
-            @can('voir_infos')
-                <a href="{{ route('listes.index')}}" class="nav-item is-active">Leave List</a>
-            @endcan
-        </nav>
+{{--            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'listes_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--            <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave List</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Leave Requests" pour les utilisateurs ayant la permission 'voir_infos' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--            <a href="{{ route('listes.conge')}}" class="nav-item is-active">Leave Requests</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Category Leave" pour les utilisateurs ayant la permission 'gerer_conges' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--            <a href="{{ route('categories-conge.index')}}" class="nav-item is-active">Category Leave</a>--}}
+{{--            @endif--}}
+{{--        </nav>--}}
 
         <br><br>
 

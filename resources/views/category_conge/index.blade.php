@@ -4,46 +4,74 @@
 
 @section('content')
     <div class="container mt-lg-5">
-        <nav class="second-navbar">
-            @can('voir_infos')
-                <a href="{{ route('listes.index')}}" class="nav-item is-active">Leave List</a>
-            @endcan
-            @can('category_conges')
-                <a href="{{ route('categories-conge.index')}}" class="nav-item is-active">Category Leave</a>
-            @endcan
-        </nav>
+{{--        <nav class="second-navbar">--}}
+{{--            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'gestion_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'listes_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave List</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Leave Requests" pour les utilisateurs ayant la permission 'voir_infos' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--                <a href="{{ route('listes.conge')}}" class="nav-item is-active">Leave Requests</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Category Leave" pour les utilisateurs ayant la permission 'gerer_conges' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--                <a href="{{ route('categories-conge.index')}}" class="nav-item is-active">Category Leave</a>--}}
+{{--            @endif--}}
+{{--        </nav>--}}
+        <br><br>
+
         <br><br>
         <div class="card">
             <div class="card-header bg-success-subtle">
-                My Leave Requests
+                Dashboard
             </div>
             <div class="card-body">
-                <table>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <th>Type of Leave</th>
-                        <th>Payment</th>
-                        <th>Allowed Days</th>
-                        <th>Used Days</th>
-                        <th>Remaining Days</th>
+                        <th>Type of leave</th>
+                        <th>Authorized days</th>
+                        <th>Payment Status</th>
+                        <th>Days used</th>
+                        <th>Days remaining</th>
                     </tr>
-                    @foreach($conges as $conge)
+                    </thead>
+                    <tbody>
+                    @foreach($gestionConges as $gestionConge)
                         <tr>
-                            <td>{{ $conge->idType_conge }}</td>
-                            <td>{{ $conge->date_debut }}</td>
-                            <td>{{ $conge->date_fin }}</td>
-                            <td>{{ $conge->nombre_jour }}</td>
-                            <td>{{ $conge->statut }}</td>
-                            @foreach($gestionConges as $gestionConge)
-                                @if($gestionConge->type_conge == $conge->idType_conge)
-                                    <td>{{ $gestionConge->paiement }}</td>
-                                    <td>{{ $gestionConge->jours_autorise }}</td>
-                                    <td>{{ $conges->where('idType_conge', $conge->idType_conge)->sum('nombre_jour') }}</td>
-                                    <td>{{ $remainingDays[$conge->idType_conge] }}</td>
-                                    @break
+                            <td>{{ $gestionConge->type_conge }}</td>
+                            <td>{{ $gestionConge->jours_autorise }}</td>
+                            <td>
+                                @if($gestionConge->paiement == 'paid')
+                                    <span class="badge badge-success">Paid</span>
+                                @else
+                                    <span class="badge badge-warning">Unpaid</span>
                                 @endif
-                            @endforeach
+                            </td>
+                            <td>
+                                @php
+                                    $joursUtilises = isset($demandesConges) ? $demandesConges->where('idType_conge', $gestionConge->id)->sum('nombre_jour') : 0;
+                                @endphp
+                                {{ $joursUtilises }}
+                            </td>
+                            <td>
+                                @if(isset($demandesConges))
+                                    {{ $gestionConge->jours_autorise - $joursUtilises }}
+                                @else
+                                    Jours non disponibles
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
+                    </tbody>
+
                 </table>
             </div>
         </div>

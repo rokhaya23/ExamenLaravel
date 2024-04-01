@@ -28,10 +28,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
             // Vérifier si l'utilisateur a le rôle admin
             if (auth()->user()->hasRole('Administrateur')) {
-                return redirect()->route('users.index');
+                return redirect()->route('roles.index');
             }
             // Vérifier si l'utilisateur a le rôle product_manager
             elseif (auth()->user()->hasRole('Gestionnaire')) {

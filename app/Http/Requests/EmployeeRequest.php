@@ -19,8 +19,12 @@ class EmployeeRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
+        $employee = $this->route('employee');
+
+        $userId = $employee ? $employee->id : null;
+
         return [
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
@@ -29,17 +33,18 @@ class EmployeeRequest extends FormRequest
             'telephone' => 'required|string|max:255',
             'poste' => 'required|string|max:255',
             'sexe' => 'required|in:M,F',
-            'email' => 'required|string|email|max:255|unique:employees,email',
+            'email' => 'required|string|email|max:255|unique:employees,email,' . $userId,
             'banque' => 'required|string|max:255',
             'numero_compte' => 'required|string|max:255',
-            'CNI' => 'required|string|max:13|unique:employees,CNI',
-            'password' => 'required|string|min:8',
+            'CNI' => 'required|string|max:13|unique:employees,CNI,' . $userId,
+            'password' => 'nullable|string|min:8',
             'departement' => 'required|string|max:255',
             'salaire' => 'required|numeric|min:0',
             'date_embauche' => 'required|date',
             'situation_matrimonial' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'language' => 'required|array',
+            'language' => 'nullable|array',
         ];
     }
+
 }

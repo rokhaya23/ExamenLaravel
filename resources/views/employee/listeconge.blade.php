@@ -4,23 +4,38 @@
 
 @section('content')
     <div class="container mt-lg-5">
-        <nav class="second-navbar">
-            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'manage_leave_categories' -->
-            @can('gestion_conge')
-                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>
-            @endcan
+{{--        <nav class="second-navbar">--}}
+{{--            <!-- Lien "Leave Category" pour les utilisateurs ayant la permission 'gestion_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave Category</a>--}}
+{{--            @endif--}}
 
-            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'view_leave_list' -->
-            @can('voir_infos')
-                <a href="{{ route('listes.index')}}" class="nav-item is-active">Leave List</a>
-            @endcan
-            @auth
-                <a href="{{ route('categories-conge.index')}}" class="nav-item is-active">Category Leave</a>
-            @endauth
-        </nav>
+{{--            <!-- Lien "Leave List" pour les utilisateurs ayant la permission 'listes_conge' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--                <a href="{{ route('conges.index')}}" class="nav-item is-active">Leave List</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Leave Requests" pour les utilisateurs ayant la permission 'voir_infos' -->--}}
+{{--            @if(auth()->user()->hasRole('Administrateur'))--}}
+{{--                <a href="{{ route('listes.conge')}}" class="nav-item is-active">Leave Requests</a>--}}
+{{--            @endif--}}
+
+{{--            <!-- Lien "Category Leave" pour les utilisateurs ayant la permission 'gerer_conges' -->--}}
+{{--            @if(auth()->user()->hasRole('Utilisateur Interne'))--}}
+{{--                <a href="{{ route('categories-conge.index')}}" class="nav-item is-active">Category Leave</a>--}}
+{{--            @endif--}}
+{{--        </nav>--}}
         <br><br>
-
-        <a class="btn btn-primary" href="{{ route('listes.create') }}">Add a Leave</a>
+        <div class="row">
+            <div class="col-6">
+                <a class="btn btn-primary" href="{{ route('listes.create') }}">Add a Leave</a>
+            </div>
+            <div class="col-6 text-right ml-auto">
+                @foreach($demandesConge as $demandeConge)
+                    <a href="{{ route('export.pdf',['id' => $demandeConge->id]) }}" class="btn btn-dark"> Export to PDF</a>
+                @endforeach
+            </div>
+        </div>
         <br><br>
         <div class="card">
             <div class="card-header bg-success-subtle">
@@ -61,7 +76,6 @@
                                     {{ $demande->statut }}
                                 </span>
                             </td>                            <td>
-                                <a href="{{ route('listes.show', $demande->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i></a>
                                 <a href="{{ route('listes.edit', $demande->id) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i></a>
                                 <form action="{{ route('listes.destroy', $demande->id) }}" method="post" style="display: inline;">
                                     @csrf

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class EmployeeController extends Controller
 {
@@ -23,8 +25,14 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $employee = new Employee(); // Crée une nouvelle instance de l'employé
-        return view('employee.form', compact('employee'));
+        if (auth()->user()->hasRole('Administrateur')) {
+
+            $employee = new Employee(); // Crée une nouvelle instance de l'employé
+            $roles = Role::all(); // Récupérez tous les rôles
+            return view('employee.form', compact('employee','roles'));
+        } else {
+            abort(403);
+        }
     }
 
 
@@ -39,7 +47,7 @@ class EmployeeController extends Controller
 
         // Vérifier si une photo a été téléchargée
         if ($request->hasFile('photo')) {
-            // Sauvegarder la photo dans le dossier public/images
+            // Sauvegarder la photo dans le dossier public/photos
             $imagePath = $request->file('photo')->store('photos', 'public');
             // Stocker le chemin de l'image dans les données du formulaire
             $data['photo'] = $imagePath;
@@ -49,7 +57,11 @@ class EmployeeController extends Controller
         $data['password'] = bcrypt($data['password']);
 
         // Créer un nouvel employé avec les données fournies
-        Employee::create($data);
+        $employee = Employee::create($data);
+
+        // Attribuer le rôle approprié à l'employé
+        $employee->assignRole($request->roles);
+
 
         // Rediriger avec un message de succès
         return redirect()->route('employees.index')->with('success', 'Employee added successfully.');
@@ -65,7 +77,12 @@ class EmployeeController extends Controller
 
     public function edit(Employee $employee)
     {
-        return view('employee.form', compact('employee'));
+        $roles = Role::get();
+
+        // Décoder le champ JSON "languages" en un tableau PHP
+        $employeeLanguages = json_decode($employee->languages, true);
+
+        return view('employee.form', compact('employee','employeeLanguages','roles'));
     }
 
     public function update(EmployeeRequest $request, Employee $employee)
@@ -73,10 +90,20 @@ class EmployeeController extends Controller
         // Récupérer les données du formulaire validées
         $data = $request->validated();
 
-        // Vérifier si un nouveau mot de passe est fourni
+        // Vérifier si un nouveau mot de passe a été fourni
         if ($request->filled('password')) {
-            // Hasher le nouveau mot de passe
-            $data['password'] = bcrypt($data['password']);
+            $data['password'] = Hash::make($request->password);
+        } else {
+            $data = $request->except('password');
+        }
+
+        // Vérifier si le champ "language" est présent dans les données validées du formulaire
+        if ($request->has('language')) {
+            // Mettre à jour les langues avec celles sélectionnées dans le formulaire
+            $data['languages'] = json_encode($request->language);
+        } else {
+            // Garder les langues existantes si rien n'a été sélectionné dans le formulaire
+            $data['languages'] = $employee->languages;
         }
 
         // Vérifier si une nouvelle photo a été téléchargée
@@ -85,7 +112,7 @@ class EmployeeController extends Controller
             if ($employee->photo) {
                 Storage::disk('public')->delete($employee->photo);
             }
-            // Sauvegarder la nouvelle photo dans le dossier public/images
+            // Sauvegarder la nouvelle photo dans le dossier public/photos
             $imagePath = $request->file('photo')->store('photos', 'public');
             // Stocker le chemin de la nouvelle image dans les données du formulaire
             $data['photo'] = $imagePath;
@@ -94,14 +121,17 @@ class EmployeeController extends Controller
         // Mettre à jour les données de l'employé avec les données fournies
         $employee->update($data);
 
+        // Mettre à jour le rôle de l'employé si nécessaire
+        $employee->syncRoles($request->roles);
+
         // Rediriger avec un message de succès
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
-
 
     public function destroy(Employee $employee)
     {
         $employee->delete();
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
     }
+
 }

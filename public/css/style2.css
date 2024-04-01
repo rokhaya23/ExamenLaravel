@@ -120,4 +120,112 @@
 .status-rejected {
     color: red; /* Red color for Rejected status */
 }
+.employee-profile-body {
+    background-color: #f9f9fa;
+}
+
+.employee-profile-padding {
+    padding: 3rem !important;
+}
+
+.employee-profile-card {
+    overflow: hidden;
+}
+
+.employee-profile-card .card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    border: none;
+    margin-bottom: 30px;
+
+}
+
+.employee-profile-m-r-0 {
+    margin-right: 0px;
+}
+
+.employee-profile-m-l-0 {
+    margin-left: 0px;
+}
+
+.bg-employee-profile {
+    background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
+    background: linear-gradient(to right, #ee5a6f, #f29263);
+}
+
+.employee-profile-user-profile {
+    padding: 20px 0;
+}
+
+.employee-profile-card-block {
+    padding: 1.25rem;
+}
+
+.employee-profile-m-b-25 {
+    margin-bottom: 25px;
+}
+
+.employee-profile-img-radius {
+    border-radius: 5px;
+}
+
+.employee-profile-h6 {
+    font-size: 14px;
+}
+
+.employee-profile-card .card-block p {
+    line-height: 130px;
+}
+
+@media only screen and (min-width: 1400px) {
+    .employee-profile-p {
+        font-size: 14px;
+    }
+}
+
+.employee-profile-b-b-default {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.employee-profile-m-b-20 {
+    margin-bottom: 20px;
+}
+
+.employee-profile-p-b-5 {
+    padding-bottom: 5px !important;
+}
+
+.employee-profile-m-b-10 {
+    margin-bottom: 10px;
+}
+
+.employee-profile-text-muted {
+    color: #919aa3 !important;
+}
+
+.employee-profile-f-w-600 {
+    font-weight: 600;
+}
+
+.employee-profile-m-t-40 {
+    margin-top: 20px;
+}
+
+.employee-profile-card .social-link li {
+    display: inline-block;
+}
+
+.employee-profile-card .social-link li a {
+    font-size: 20px;
+    margin: 0 10px 0 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.page-container-expanded {
+    max-width: 1500px; /* Ajustez la largeur maximale selon vos besoins */
+    margin: 0 auto; /* Pour centrer le conteneur horizontalement */
+}
+
+
 /* Ajoutez d'autres styles personnalisés au besoin */

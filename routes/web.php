@@ -24,12 +24,24 @@ Route::post('/logout',[\App\Http\Controllers\AuthController::class, 'logout'])->
 
 
 
-Route::resource('/users', \App\Http\Controllers\UtilisateurController::class);
 Route::resource('/employees', \App\Http\Controllers\EmployeeController::class);
 Route::resource('/contrats', \App\Http\Controllers\ContratController::class);
 Route::resource('/conges', \App\Http\Controllers\GestionCongeController::class);
 Route::resource('/listes', \App\Http\Controllers\ListesCongeController::class);
+Route::resource('/roles', \App\Http\Controllers\RoleController::class);
+
+Route::get('/listes/conge', [\App\Http\Controllers\ListesCongeController::class,'conge'])->name('listes.conge');
+
 
 Route::get('/getPhoneNumber/{employeeId}', [\App\Http\Controllers\ListesCongeController::class ,'getPhoneNumber']);
 
 Route::get('/categories-conge', [\App\Http\Controllers\CategorieConge::class,'index'])->name('categories-conge.index');
+
+Route::get('/generate-pdf/{id}', [\App\Http\Controllers\CategorieConge::class,'telechargerPdfDemandeConge'])->name('export.pdf');
+
+Route::get('/valider_demande_conges/{id}', [\App\Http\Controllers\ListesCongeController::class,'valider'])->name('valider_demande_conges');
+Route::get('/refuser_demande_conges/{id}', [\App\Http\Controllers\ListesCongeController::class,'refuser'])->name('refuser_demande_conges');
+
+Route::get('mes-demandes-conge', [\App\Http\Controllers\ListesCongeController::class, 'mesDemandes'])->name('mes_demandes_conge');
+
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
