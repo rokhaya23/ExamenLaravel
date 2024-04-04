@@ -15,17 +15,18 @@
                     @csrf
                     @method($demandeConge->exists ? 'put' : 'post')
 
-                    <!-- Employé -->
                     <div class="mb-3 row">
                         <label for="idEmployee" class="col-md-4 col-form-label text-md-end text-start">Employee</label>
                         <div class="col-md-6">
                             <select class="form-control" id="idEmployee" name="idEmployee" required>
                                 @foreach ($employees as $employee)
-                                    @if (Auth::user()->hasRole('Utilisateur Interne') && $employee->id == Auth::user()->employee->id)
+                                    @if (Auth::user()->hasRole('Utilisateur Interne') && $employee->id == Auth::user()->id)
+                                        <!-- Si l'utilisateur est un utilisateur interne, afficher uniquement son propre nom -->
                                         <option value="{{ $employee->id }}" selected>
                                             {{ $employee->prenom }} {{ $employee->nom }}
                                         </option>
                                     @elseif (!Auth::user()->hasRole('Utilisateur Interne'))
+                                        <!-- Si l'utilisateur n'est pas un utilisateur interne, afficher tous les noms des employés -->
                                         <option value="{{ $employee->id }}" {{ $employee->id == $demandeConge->idEmployee ? 'selected' : '' }}>
                                             {{ $employee->prenom }} {{ $employee->nom }}
                                         </option>
@@ -34,7 +35,6 @@
                             </select>
                         </div>
                     </div>
-
                     <!-- Type de congé -->
                     <div class="mb-3 row">
                         <label for="idType_conge" class="col-md-4 col-form-label text-md-end text-start">Leave Type</label>
@@ -82,8 +82,8 @@
                         </div>
                     </div>
 
+                    <!-- Statut (uniquement pour les administrateurs) -->
                     @if (Auth::user()->hasRole('Administrateur'))
-                        <!-- Statut -->
                         <div class="mb-3 row">
                             <label for="statut" class="col-md-4 col-form-label text-md-end text-start">Status</label>
                             <div class="col-md-6">

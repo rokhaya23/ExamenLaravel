@@ -45,6 +45,17 @@
                     </thead>
                     <tbody>
                     @foreach($gestionConges as $gestionConge)
+                        @php
+                            $joursUtilises = 0;
+                            if(isset($demandesConges)) {
+                                foreach($demandesConges as $demandeConge) {
+                                    if($demandeConge->idType_conge == $gestionConge->id && $demandeConge->statut == 'Accepted') {
+                                        $joursUtilises += $demandeConge->nombre_jour;
+                                    }
+                                }
+                            }
+                            $joursRestants = $gestionConge->jours_autorise - $joursUtilises;
+                        @endphp
                         <tr>
                             <td>{{ $gestionConge->type_conge }}</td>
                             <td>{{ $gestionConge->jours_autorise }}</td>
@@ -55,15 +66,12 @@
                                     <span class="badge badge-warning">Unpaid</span>
                                 @endif
                             </td>
+                            <td>{{ $joursUtilises }}</td>
                             <td>
-                                @php
-                                    $joursUtilises = isset($demandesConges) ? $demandesConges->where('idType_conge', $gestionConge->id)->sum('nombre_jour') : 0;
-                                @endphp
-                                {{ $joursUtilises }}
-                            </td>
-                            <td>
-                                @if(isset($demandesConges))
-                                    {{ $gestionConge->jours_autorise - $joursUtilises }}
+                                @if(isset($demandesConges) && $joursRestants >= 0)
+                                    {{ $joursRestants }}
+                                @elseif(isset($demandesConges) && $joursRestants < 0)
+                                    <span class="text-danger">Demande supérieure au nombre de jours autorisés</span>
                                 @else
                                     Jours non disponibles
                                 @endif

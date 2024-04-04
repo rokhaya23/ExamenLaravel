@@ -29,6 +29,7 @@ Route::resource('/contrats', \App\Http\Controllers\ContratController::class);
 Route::resource('/conges', \App\Http\Controllers\GestionCongeController::class);
 Route::resource('/listes', \App\Http\Controllers\ListesCongeController::class);
 Route::resource('/roles', \App\Http\Controllers\RoleController::class);
+Route::resource('/documents', \App\Http\Controllers\DocumentController::class);
 
 Route::get('/listes/conge', [\App\Http\Controllers\ListesCongeController::class,'conge'])->name('listes.conge');
 
@@ -45,3 +46,6 @@ Route::get('/refuser_demande_conges/{id}', [\App\Http\Controllers\ListesCongeCon
 Route::get('mes-demandes-conge', [\App\Http\Controllers\ListesCongeController::class, 'mesDemandes'])->name('mes_demandes_conge');
 
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'dashboard'])->name('dashboard');
+Route::get('/documents/attestation',[\App\Http\Controllers\DocumentController::class, 'attestation'])->name('documents.attestation');
+Route::get('/documents/contrat',[\App\Http\Controllers\DocumentController::class, 'contrat'])->name('documents.contrat');
+Route::get('/documents/leave',[\App\Http\Controllers\DocumentController::class, 'conge'])->name('documents.leave_request');

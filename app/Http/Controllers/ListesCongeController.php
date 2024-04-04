@@ -20,11 +20,20 @@ class ListesCongeController extends Controller
 
     public function index()
     {
-        // Récupérer toutes les demandes de congé avec les informations de l'employé et du type de congé associés
-        $demandesConge = Conge::with('employees', 'typeConge')->get();
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+
+        // Vérifier le rôle de l'utilisateur
+        if ($user->hasRole('Utilisateur Interne')) {
+            // Si l'utilisateur est un utilisateur interne, récupérer uniquement ses propres demandes de congé
+            $demandesConge = $user->conges()->with('employees', 'typeConge')->get();
+        } else {
+            // Si l'utilisateur n'est pas un utilisateur interne, récupérer toutes les demandes de congé
+            $demandesConge = Conge::with('employees', 'typeConge')->get();
+        }
+
         return view('employee.listeconge', compact('demandesConge'));
     }
-
     public function create()
     {
         // Créer une nouvelle instance de Conge vide pour le formulaire de création
@@ -50,6 +59,19 @@ class ListesCongeController extends Controller
             // Autres règles de validation...
         ]);
 
+        // Récupérer le nombre de jours restants pour le type de congé sélectionné
+        $gestionConge = Gestion_Conge::findOrFail($request->idType_conge);
+        $joursUtilises = Conge::where('idType_conge', $request->idType_conge)
+            ->where('statut', 'Accepted')
+            ->sum('nombre_jour');
+        $joursRestants = $gestionConge->jours_autorise - $joursUtilises;
+
+        // Vérifier si le nombre de jours demandés dépasse les jours restants
+        if ($request->nombre_jour > $joursRestants) {
+            // Rediriger avec un message d'erreur
+            return redirect()->back()->with('error', 'Le nombre de jours demandés dépasse les jours restants.');
+        }
+
         // Créer une nouvelle instance de Conge avec les données du formulaire
         $demandeConge = new Conge();
         $demandeConge->idEmployee = Auth::id(); // Identifiant de l'employé connecté
@@ -70,6 +92,7 @@ class ListesCongeController extends Controller
         // Rediriger l'utilisateur vers la page de liste des demandes de congé ou toute autre page appropriée
         return redirect()->route('listes.index')->with('success', 'Leave request successfully created.');
     }
+
 
     public function edit(Conge $demandeConge)
     {
@@ -166,7 +189,7 @@ class ListesCongeController extends Controller
         $demandeConge->statut = 'Accepted';
         $demandeConge->save();
 
-        return view('employee.listecongeadmin',  compact('demandeConge'))->with('success', 'The leave request has been accepted successfully.');
+        return $this->mesDemandes()->with('success', 'The leave request has been accepted successfully.');
     }
 
     public function refuser($id)
@@ -176,7 +199,7 @@ class ListesCongeController extends Controller
         $demandeConge->statut = 'Rejected';
         $demandeConge->save();
 
-        return view('employee.listecongeadmin',  compact('demandeConge'))->with('success', 'The leave request has been rejected successfully.');
+        return $this->mesDemandes()->with('success', 'The leave request has been rejected successfully.');
     }
 
     public function mesDemandes()

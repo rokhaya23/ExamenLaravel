@@ -77,7 +77,7 @@
             @can('listes_conge')
                 <li class="active"><a href="{{ route('mes_demandes_conge') }}"><i class='bx bx-group'></i>Leave List</a></li>
             @endcan
-            <li><a href="#"><i class='bx bx-cog'></i>Document</a></li>
+            <li class="active"><a href="{{ route('documents.index') }}"><i class='bx bx-cog'></i>Document</a></li>
         @endauth
     </ul>
     <ul class="side-menu">

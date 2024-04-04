@@ -18,7 +18,7 @@ class Gestion_Conge extends Model
         return $this->hasOne(Category_Conge::class, 'idType_conge');
     }
 
-    public function congees()
+    public function conges()
     {
         return $this->hasMany(Conge::class, 'idType_conge');
     }
